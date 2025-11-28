@@ -19,6 +19,5 @@ public class Main {
         Thread musicThread = new Thread(soundEngine::run, "SoundEngine");
         musicThread.setDaemon(true);
         musicThread.start();
-
     }
 }

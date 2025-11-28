@@ -9,7 +9,10 @@ Date: Nov 27, 2025
 * 1. Created GameWindow, character, soundEngine, TimerEngine, aStaticHolder, 
 * 2. created main class.
 
-##11/26/2025
-
+##11/27/2025
+* 1. Refactored updateBars method, now the bars clamp properly. 
+* 2. Created loadImage method to switch between background images.
+* 3. Implemented basic timerEngine class, not working as intended
 ### ToDo
+* 0. Fix timerEngine class.
 * 1. Background Scene Logic, additional timerEngine Logic, RegexEngine

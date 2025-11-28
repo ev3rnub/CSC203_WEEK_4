@@ -25,7 +25,7 @@ public class GameWindow extends JFrame {
         ADVENTURE,
         TRAVELING
     }
-    CurrentMode currentMode = CurrentMode.MENU;
+    public CurrentMode currentMode = CurrentMode.MENU;
     Boolean gameStarted = false;
 // define enum for window text color
     enum WindowTextColor {
@@ -72,6 +72,9 @@ public class GameWindow extends JFrame {
     ImageIcon someMidGround;
     ImageIcon someForestBackground;
     ImageIcon someMountainBackground;
+    ImageIcon someDesertBackground;
+    ImageIcon someSnowBackground;
+    ImageIcon someCavesBackground;
     public JLabel background;
     public JLabel midground;
     Character someMulta;
@@ -100,13 +103,55 @@ public class GameWindow extends JFrame {
         setSize(width, height);
         setMinimumSize(new Dimension(width, height));
         setResizable(false);
-        drawActionScreen();
+        ImageIcon someBackground = getSomeBackground("FOREST");
+        ImageIcon someMidGround = getSomeMidGround("MENU");
+        drawActionScreen(someBackground, someMidGround);
         mainInput.setVisible(false);
     }
 
-    public
+    public ImageIcon getSomeBackground(String someType){
+        switch(someType){
+            case "FOREST":
+                someForestBackground = new ImageIcon("src/main/resources/image/Forest_Background_Sunny.png");
+                return someForestBackground;
+            case "MOUNTAIN":
+                someMountainBackground = new ImageIcon("src/main/resources/image/Mountain_Background_Sunny.png");
+                return someMountainBackground;
+            case "DESERT":
+                someDesertBackground = new ImageIcon("src/main/resources/image/Desert_Background_Sunny.png");
+                return someDesertBackground;
+            case "SNOW":
+                someSnowBackground = new ImageIcon("src/main/resources/image/Snow_Background_Sunny.png");
+                return someSnowBackground;
+            case "CAVE":
+                someCavesBackground = new ImageIcon("src/main/resources/image/Cave_Background_Sunny.png");
+                return someCavesBackground;
+            default:
+                return null;
+        }
 
-    private void drawActionScreen(){
+
+
+    }
+
+    public ImageIcon getSomeMidGround(String someType){
+        switch(someType){
+            case "MENU":
+                someMidGround = new ImageIcon("src/main/resources/image/Multa_Cutout.png");
+                break;
+            case "TRAVELING":
+                someMidGround = new ImageIcon("src/main/resources/image/Multa_BRB_Traveling.png");
+                break;
+        }
+        //      load images for avatar and background.
+
+        Image someImage = someMidGround.getImage();
+        Image scaledAvatarImage = someImage.getScaledInstance(256, 256, someImage.SCALE_SMOOTH);
+        ImageIcon processedImage = new ImageIcon(scaledAvatarImage);
+        return processedImage;
+    }
+
+    public void drawActionScreen(ImageIcon someBackground, ImageIcon someMidGround) {
         //      JPanel that holds our main panel that we attach all content to.
         JPanel main = new JPanel(new BorderLayout(10,10));
         JScrollPane scroll = new JScrollPane(textPane(Color.BLACK));
@@ -115,17 +160,8 @@ public class GameWindow extends JFrame {
         scroll.setVisible(true);
         //add it to our main
         main.add(scroll, BorderLayout.NORTH);
-//      load images for avatar and background.
-        someForestBackground = new ImageIcon("src/main/resources/image/Forest_Background_Sunny.png");
-        someMountainBackground = new ImageIcon("src/main/resources/image/Mountain_Background_Sunny.png");
-        someDesertBackground = new ImageIcon("src/main/recources/image/Desert_Background_Sunny.png");
-        someMidGround = new ImageIcon("src/main/resources/image/Multa_Cutout.png");
-        someBackground = new ImageIcon("src/main/resources/image/Forest_Background_Sunny.png");
-        Image someImage = someMidGround.getImage();
-        Image scaledAvatarImage = someImage.getScaledInstance(256, 256, someImage.SCALE_SMOOTH);
-        ImageIcon processedImage = new ImageIcon(scaledAvatarImage);
+        midground = new JLabel(someMidGround);
         background = new JLabel(someBackground);
-        midground = new JLabel(processedImage);
         background.setVisible(true);
         background.setBounds(0, 100, 600, 300);
         midground.setVisible(true);
@@ -213,7 +249,7 @@ public class GameWindow extends JFrame {
 
         //display text based statues
 
-        layeredPane.setBounds(0, 0, 600, 300);
+        layeredPane.setBounds(0, 0, 500, 300);
         layeredPane.add(staticBarHealth, Integer.valueOf(0));
         layeredPane.add(healthBar, Integer.valueOf(1));
         layeredPane.add(staticBarMana, Integer.valueOf(0));
@@ -521,129 +557,43 @@ public class GameWindow extends JFrame {
         return (int) (Math.random() * (max - min + 1) + min);
     }
 
-    public void updateBars(String someType, String operation, int someInt){
+
+    public void updateBars(String someType, String operation, int amount) {
+        int currentWidth;
+        int newWidth;
+        JPanel targetBar = null;
+
         switch (someType.toLowerCase()) {
             case "health":
-                if (operation.toLowerCase().equals("add")) {
-                    int currentHealth = healthBar.getWidth();
-                    currentHealth = currentHealth + someInt;
-                    if (currentHealth > 600) {
-                        healthBar.setSize(600, 20);
-                    } else {
-                        healthBar.setSize(currentHealth, 20);
-                        int afterSize = healthBar.getWidth();
-                        if (afterSize > 600) {
-                            healthBar.setSize(600, 20);
-                        } else {
-                            healthBar.setSize(currentHealth, 20);
-                        }
-                    }
-                    int lastHP = healthBar.getWidth();
-                    if (lastHP > 600) {
-                        healthBar.setSize(600, 20);
-                    }
-                }
-                if (operation.toLowerCase().equals("subtract")) {
-                    int currentHealth = healthBar.getWidth();
-                    currentHealth = currentHealth - someInt;
-                    if (currentHealth < 0) {
-                        healthBar.setSize(0, 20);
-                    } else {
-                        healthBar.setSize(currentHealth, 20);
-                    }
-                }
-            case "stamina":
-                if (operation.toLowerCase().equals("add")) {
-                    int currentStamina = stamBar.getWidth();
-                    currentStamina = currentStamina + someInt;
-                    System.out.println(currentStamina);
-                    if (currentStamina > 600) {
-                        stamBar.setSize(600, 20);
-                        System.out.println("INSIDE StAM IF");
-                    } else {
-                        stamBar.setSize(currentStamina, 20);
-                        int afterSize = stamBar.getWidth();
-                        if (afterSize > 600) {
-                            stamBar.setSize(600, 20);
-                        } else {
-                            stamBar.setSize(currentStamina, 20);
-                        }
-                    }
-                    int lastStam = stamBar.getWidth();
-                    if (lastStam > 600) {
-                        stamBar.setSize(600, 20);
-                    }
-                }
-                if (operation.toLowerCase().equals("subtract")) {
-                    int currentStamina = stamBar.getWidth();
-                    currentStamina = currentStamina - someInt;
-                    if (currentStamina < 0) {
-                        stamBar.setSize(0, 20);
-                    } else {
-                        stamBar.setSize(currentStamina, 20);
-                    }
-                }
-            case "mana":
-                if (operation.toLowerCase().equals("add")) {
-                    int currentMana = manaBar.getWidth();
-                    currentMana = currentMana + someInt;
-                    if (currentMana > 600) {
-                        manaBar.setSize(600, 20);
-                    } else {
-                        manaBar.setSize(currentMana, 20);
-                        int afterSize = manaBar.getWidth();
-                        if (afterSize > 600) {
-                            manaBar.setSize(600, 20);
-                        } else {
-                            manaBar.setSize(currentMana, 20);
-                        }
-                    }
-                    int lastMana = manaBar.getWidth();
-                    if (lastMana > 600) {
-                        manaBar.setSize(600, 20);
-                    }
-                }
-                if (operation.toLowerCase().equals("subtract")) {
-                    int currentHealth = manaBar.getWidth();
-                    currentHealth = currentHealth - someInt;
-                    if (currentHealth < 0) {
-                        manaBar.setSize(0, 20);
-                    } else {
-                        manaBar.setSize(currentHealth, 20);
-                    }
-                }
-            case "xp":
-                if (operation.toLowerCase().equals("add")) {
-                    int currentXP = xpBar.getWidth();
-                    currentXP = currentXP + someInt;
-                    if (currentXP > 600) {
-                        xpBar.setSize(600, 20);
-                    } else {
-                        xpBar.setSize(currentXP, 20);
-                        int afterSize = xpBar.getWidth();
-                        if (afterSize > 600) {
-                            xpBar.setSize(600, 20);
-                        } else {
-                            xpBar.setSize(currentXP, 20);
-                        }
-                    }
-                    int lastXP = xpBar.getWidth();
-                    if (lastXP > 600) {
-                        xpBar.setSize(600, 20);
-                    }
-                }
-                if (operation.toLowerCase().equals("subtract")) {
-                    int currentXP = xpBar.getWidth();
-                    currentXP = currentXP - someInt;
-                    if (currentXP < 0) {
-                        xpBar.setSize(0, 20);
-                    } else {
-                        xpBar.setSize(currentXP, 20);
-                    }
-                }
-            default:{
+                targetBar = healthBar;
                 break;
-            }
+            case "stamina":
+                targetBar = stamBar;
+                break;
+            case "mana":
+                targetBar = manaBar;
+                break;
+            case "xp":
+            case "experience points":  // accept both
+                targetBar = xpBar;
+                break;
+            default:
+                return; // do nothing
         }
+
+        currentWidth = targetBar.getWidth();
+
+        if (operation.equalsIgnoreCase("add")) {
+            newWidth = currentWidth + amount;
+        } else if (operation.equalsIgnoreCase("subtract")) {
+            newWidth = currentWidth - amount;
+        } else {
+            return;
+        }
+
+        // Clamp between 0 and 600
+        newWidth = Math.max(0, Math.min(500, newWidth));
+
+        targetBar.setSize(newWidth, 20);
     }
 }
