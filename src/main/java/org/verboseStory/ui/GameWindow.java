@@ -1,20 +1,17 @@
 package org.verboseStory.ui;
-
 import org.verboseStory.engine.TimerEngine;
-import org.verboseStory.model.*;
-import org.verboseStory.model.Character;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
+
+// our game window class extends JFrame
 public class GameWindow extends JFrame {
+//    window title
     String windowTitle;
 // current mode to keep state of what our Multa/Avatar is doing
+//    #FUTUREME implement the rest besides menu
     public enum CurrentMode {
         MENU,
         ACTION,
@@ -25,6 +22,7 @@ public class GameWindow extends JFrame {
         ADVENTURE,
         TRAVELING
     }
+//    set our default "mode"
     public CurrentMode currentMode = CurrentMode.MENU;
     Boolean gameStarted = false;
 // define enum for window text color
@@ -52,23 +50,11 @@ public class GameWindow extends JFrame {
 //  Reference bars to we can change them later.
     JPanel healthBar;
     JPanel staticBarHealth;
-    JPanel manaBar;
-    JPanel staticBarMana;
-    JPanel stamBar;
-    JPanel staticBarStam;
-    JPanel xpBar;
-    JPanel staticXpBar;
-    JPanel mainInput;
-
-    int currentFoodPoints = 5;
-    int restRegenRate = 200;
-    int marginLeft = 40;
-    int foodXpRate = 20;
-    int exploreXpRate = 20;
-    int adventureXpRate = 20;
-    int forageXpRate = 20;
-
-    ImageIcon someBackground;
+    JPanel happyLevel;
+    JPanel staticBarhapLevel;
+    JPanel hungerBar;
+    JPanel staticBarHunger;
+    //define imagine icons
     ImageIcon someMidGround;
     ImageIcon someForestBackground;
     ImageIcon someMountainBackground;
@@ -77,7 +63,9 @@ public class GameWindow extends JFrame {
     ImageIcon someCavesBackground;
     public JLabel background;
     public JLabel midground;
-    Character someMulta;
+
+    int marginLeft = 40;
+
 //set window title
     public void setWindowTitle(String windowTitle) {
         this.windowTitle = windowTitle;
@@ -85,6 +73,10 @@ public class GameWindow extends JFrame {
 // set current game mode
     public void setCurrentMode(CurrentMode currentMode) {
         this.currentMode = currentMode;
+    }
+//    get current mode.
+    public CurrentMode getCurrentMode(){
+        return currentMode;
     }
 // set window text color
     public void setWindowTextColor(WindowTextColor windowTextColor) {
@@ -106,7 +98,6 @@ public class GameWindow extends JFrame {
         ImageIcon someBackground = getSomeBackground("FOREST");
         ImageIcon someMidGround = getSomeMidGround("MENU");
         drawActionScreen(someBackground, someMidGround);
-        mainInput.setVisible(false);
     }
 
     public ImageIcon getSomeBackground(String someType){
@@ -187,130 +178,78 @@ public class GameWindow extends JFrame {
         healthBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         healthBar.setOpaque(true);
         healthBar.setVisible(true);
-//      ManaBar
-        staticBarMana = new JPanel(new BorderLayout());
-        staticBarMana.setBackground(Color.BLACK);
-        staticBarMana.setSize(500, 20);
-        staticBarMana.setBounds(marginLeft, 20, 500, 20);
-        staticBarMana.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-        staticBarMana.setOpaque(true);
-        staticBarMana.setVisible(true);
-        manaBar = new JPanel(new BorderLayout());
-        JLabel someManaText = new JLabel("Mana:");
+//      happyness
+        staticBarhapLevel = new JPanel(new BorderLayout());
+        staticBarhapLevel.setBackground(Color.BLACK);
+        staticBarhapLevel.setSize(500, 20);
+        staticBarhapLevel.setBounds(marginLeft, 20, 500, 20);
+        staticBarhapLevel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        staticBarhapLevel.setOpaque(true);
+        staticBarhapLevel.setVisible(true);
+        happyLevel = new JPanel(new BorderLayout());
+        JLabel someManaText = new JLabel("Happiness: ");
         someManaText.setForeground(Color.WHITE);
-        manaBar.add(someManaText, BorderLayout.CENTER);
-        manaBar.setBackground(Color.BLUE);
-        manaBar.setSize(500, 20);
-        manaBar.setBounds(marginLeft, 20, 500, 20);
-        manaBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        manaBar.setOpaque(true);
-        manaBar.setVisible(true);
-//      Stamina
-        staticBarStam = new JPanel(new BorderLayout());
-        staticBarStam.setBackground(Color.BLACK);
-        staticBarStam.setSize(500, 20);
-        staticBarStam.setBounds(marginLeft, 40, 500, 20);
-        staticBarStam.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-        staticBarStam.setOpaque(true);
-        staticBarStam.setVisible(true);
-        stamBar = new JPanel(new BorderLayout());
-        stamBar.add(new JLabel("Stamina:"), BorderLayout.CENTER);
-        stamBar.setBackground(Color.YELLOW);
-        stamBar.setForeground(Color.BLACK);
-        stamBar.setSize(500, 20);
-        stamBar.setBounds(marginLeft, 40, 500, 20);
-        stamBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        stamBar.setOpaque(true);
-        stamBar.setVisible(true);
-
-        //xp bar
-        staticXpBar = new JPanel();
-        staticXpBar.setBackground(Color.BLACK);
-        JLabel staticXpText = new JLabel();
-        staticXpText.setForeground(Color.WHITE);
-        staticXpText.setText("XP:");
-        staticXpBar.setSize(500, 20);
-        staticXpBar.setBounds(marginLeft, 60, 500, 20);
-        staticXpBar.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-        staticXpBar.setOpaque(true);
-        staticXpBar.setVisible(true);
-        xpBar = new JPanel();
-        JLabel xpLabel = new JLabel();
-        xpLabel.setText("XP:");
-        xpLabel.setForeground(Color.WHITE);
-        xpBar.add(xpLabel);
-        xpBar.setBackground(Color.DARK_GRAY);
-        xpBar.setSize(500, 20);
-        xpBar.setBounds(marginLeft, 60, 500, 20);
-        xpBar.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-        xpBar.setOpaque(true);
-        xpBar.setVisible(true);
-
-
-        //display text based statues
-
+        happyLevel.add(someManaText, BorderLayout.CENTER);
+        happyLevel.setBackground(Color.BLUE);
+        happyLevel.setSize(100, 20);
+        happyLevel.setBounds(marginLeft, 20, 500, 20);
+        happyLevel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        happyLevel.setOpaque(true);
+        happyLevel.setVisible(true);
+//      Hunger
+        staticBarHunger = new JPanel(new BorderLayout());
+        staticBarHunger.setBackground(Color.BLACK);
+        staticBarHunger.setSize(500, 20);
+        staticBarHunger.setBounds(marginLeft, 40, 500, 20);
+        staticBarHunger.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        staticBarHunger.setOpaque(true);
+        staticBarHunger.setVisible(true);
+        hungerBar = new JPanel(new BorderLayout());
+        hungerBar.add(new JLabel("Hunger: "), BorderLayout.CENTER);
+        hungerBar.setBackground(Color.YELLOW);
+        hungerBar.setForeground(Color.BLACK);
+        hungerBar.setSize(0, 20);
+        hungerBar.setBounds(marginLeft, 40, 500, 20);
+        hungerBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        hungerBar.setOpaque(true);
+        hungerBar.setVisible(true);
+        //layered pane to hold all of our bars
         layeredPane.setBounds(0, 0, 500, 300);
         layeredPane.add(staticBarHealth, Integer.valueOf(0));
         layeredPane.add(healthBar, Integer.valueOf(1));
-        layeredPane.add(staticBarMana, Integer.valueOf(0));
-        layeredPane.add(manaBar, Integer.valueOf(2));
-        layeredPane.add(staticBarStam, Integer.valueOf(0));
-        layeredPane.add(stamBar, Integer.valueOf(3));
+        layeredPane.add(staticBarhapLevel, Integer.valueOf(0));
+        layeredPane.add(happyLevel, Integer.valueOf(2));
+        layeredPane.add(staticBarHunger, Integer.valueOf(0));
+        layeredPane.add(hungerBar, Integer.valueOf(3));
         layeredPane.add(background, Integer.valueOf(4));
         layeredPane.add(midground, Integer.valueOf(5));
-        layeredPane.add(staticXpBar, Integer.valueOf(6));
-        layeredPane.add(xpBar, Integer.valueOf(7));
-        JLabel multaName = new JLabel();
-        multaName.setHorizontalAlignment(SwingConstants.CENTER);
-        multaName.setFont(new Font( "Ariel", Font.BOLD, 40));
-        multaName.setName("Multa Name");
-        layeredPane.add(multaName, Integer.valueOf(6));
         layeredPane.setVisible(true);
         layeredPane.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+        //finally add the layeredPane to our main panel
         main.add(layeredPane, BorderLayout.CENTER);
 
-//      JPanel that holds our text input field for the player.
-        mainInput = new JPanel();
-        mainInput.add(textField(),  BorderLayout.WEST);
-        mainInput.add(newButton("SEND", Color.BLACK, Color.CYAN, "Send a message to your multa"), BorderLayout.EAST);
-
 //      Jpanel that holds our additional buttons.
-        JPanel controlPanel = new JPanel(new GridLayout(3,3, 2,2));
+        JPanel controlPanel = new JPanel(new GridLayout(1,4, 2,2));
         controlPanel.add(newButton("FEED", Color.CYAN, Color.BLACK, "Feed your Multa"));
         controlPanel.add(newButton("PLAY", Color.CYAN, Color.BLACK, "Play with your Multa"));
-        controlPanel.add(newButton("REST", Color.CYAN, Color.BLACK, "Command your Multa to rest"));
-        controlPanel.add(newButton("FORAGE", Color.CYAN, Color.BLACK, "Command your Multa to Forage for food"));
-        controlPanel.add(newButton("ADVENTURE", Color.CYAN, Color.BLACK, "Command your Multa to adventure"));
-        controlPanel.add(newButton("HEAL", Color.CYAN, Color.BLACK, "Heal your Multa"));
-        controlPanel.add(newButton("MEDITATE", Color.CYAN, Color.BLACK, "Meditate to regen Mana"));
-        controlPanel.add(newButton("EXPLORE", Color.CYAN, Color.BLACK, "Explore to find locations to adventure in"));
+        controlPanel.add(newButton("GROOM", Color.CYAN, Color.BLACK, "Groom you Multa"));
         controlPanel.add(newButton("QUIT", Color.CYAN, Color.BLACK, "This closes the game."));
 
 //      Combine our control panel and text input field into a new panel.
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.add(mainInput, BorderLayout.NORTH);
         inputPanel.add(controlPanel, BorderLayout.SOUTH);
         main.add(inputPanel, BorderLayout.SOUTH);
 //      Attach all our objects to the content pane of or JFrame.
         setContentPane(main);
         startGame();
     }
-
+//
     private void startGame(){
         sendMessage("Welcome to Verbose Hominid:Multa");
         sendMessage("A idle game, where you send a Multa to explore its world.");
         sendMessage("Take care though, as if it dies game over.");
         sendMessage("Magical Traps set.....");
         sendMessage("Multa Acquired.....");
-        while(gameStarted){
-            if (healthBar.getWidth() == 0){
-                sendMessage("Multa Dead");
-                gameStarted = false;
-            }else if (healthBar.getWidth() > 600){
-                healthBar.setSize(600, 20);
-            }
-
-        }
     }
     private JTextPane textPane (Color someColor) {
         output = new JTextPane();
@@ -323,21 +262,6 @@ public class GameWindow extends JFrame {
         return output;
     }
 
-    JTextField someInputField;
-    private JTextField textField() {
-        someInputField = new JTextField();
-        someInputField.setBackground(Color.BLACK);
-        someInputField.setForeground(Color.CYAN);
-        someInputField.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        someInputField.setEditable(true);
-        someInputField.setVisible(true);
-        someInputField.setToolTipText("Enter text here");
-        someInputField.setCaretColor(Color.CYAN);
-        someInputField.setPreferredSize(new Dimension(400,40));
-        someInputField.addActionListener(send);
-        return someInputField;
-    }
-
     private JButton newButton(String text, Color someForeGroundColor, Color someBackgroundColor, String someTooltip) {
         JButton someButton = new JButton(text);
         someButton.setBackground(someBackgroundColor);
@@ -348,10 +272,6 @@ public class GameWindow extends JFrame {
         someButton.setVisible(true);
         someButton.setPreferredSize(new Dimension(75,20));
         switch (text){
-            case "SEND":
-                someButton.setToolTipText(someTooltip);
-                someButton.addActionListener(send);
-                return someButton;
             case "FEED":
                 someButton.setToolTipText(someTooltip);
                 someButton.addActionListener(feed);
@@ -360,29 +280,9 @@ public class GameWindow extends JFrame {
                 someButton.setToolTipText(someTooltip);
                 someButton.addActionListener(play);
                 return someButton;
-            case "REST":
+            case "GROOM":
                 someButton.setToolTipText(someTooltip);
-                someButton.addActionListener(rest);
-                return someButton;
-            case "FORAGE":
-                someButton.setToolTipText(someTooltip);
-                someButton.addActionListener(forage);
-                return someButton;
-            case "ADVENTURE":
-                someButton.setToolTipText(someTooltip);
-                someButton.addActionListener(adventure);
-                return someButton;
-            case "HEAL":
-                someButton.setToolTipText(someTooltip);
-                someButton.addActionListener(heal);
-                return someButton;
-            case "MEDITATE":
-                someButton.setToolTipText(someTooltip);
-                someButton.addActionListener(meditate);
-                return someButton;
-            case "EXPLORE":
-                someButton.setToolTipText(someTooltip);
-                someButton.addActionListener(explore);
+                someButton.addActionListener(groom);
                 return someButton;
             case "QUIT":
                 someButton.setToolTipText(someTooltip);
@@ -394,109 +294,53 @@ public class GameWindow extends JFrame {
         }
     }
 
-    ActionListener send = e -> {
-        String someLine = someInputField.getText().trim();
-        if (someLine.equals("q") || someLine.equals("quit") || someLine.equals("exit")){
-            exitGame();
-        }
-        if (!someLine.isEmpty()) {
-            sendMessage(someLine);
-            someInputField.setText("");
-            someInputField.requestFocus();
+    ActionListener feed = e -> {
+        sendMessage("Multa is looking in its food storage for food");
+        int someInt = randomInt(0,100);
+        if (someInt > 50){
+            if (hungerBar.getWidth() < 100){
+                sendMessage("Multa found food!");
+                updateBars("health", "add", 10);
+                updateBars("hunger", "subtract", randomInt(1,100));
+                updateBars("happiness", "add", randomInt(1,10));
+            }else if (healthBar.getWidth() < 500){
+                sendMessage("Multa found food!");
+                updateBars("health", "add", 10);
+                updateBars("hunger", "subtract", randomInt(1,100));
+                updateBars("happiness", "add", randomInt(1,10));
+            }else{
+                sendMessage("Multa isn't hungry");
+            }
+
+        }else{
+            if (hungerBar.getWidth() > 300){
+                new TimerEngine( randomInt(0,2), "Multa isn't hungry");
+            }else{
+                sendMessage("Multa is kinda hungry but found no food");
+                updateBars("hunger", "add", randomInt(1, 15));
+                updateBars("happiness", "subtract", randomInt(1,75));
+            }
+
         }
     };
 
-    ActionListener feed = e -> {
-        sendMessage("Multa is looking in its food storage for food");
-        if (currentFoodPoints > 1){
-            sendMessage("Multa started to eat");
-            updateBars("health", "add", 10);
-            sendMessage("Gained " + foodXpRate + " experience points");
-            updateBars("xp", "add", foodXpRate);
-            sendMessage("Multa finished eating");
-            currentFoodPoints--;
-        }else{
-            sendMessage("Multa has no food to eat.");
-        }
+    ActionListener groom = e -> {
+        updateBars("happiness", "add", 50);
+        new TimerEngine(2, "Finished Grooming Multa");
     };
 
     ActionListener play = e -> {
         sendMessage("Multa started to play");
-        if(stamBar.getWidth() > 50){
-            updateBars("stamina", "subtract", 50);
-            updateBars("experience points", "add", 10);
-            sendMessage("Multa finished playing");
+        int someInt =  randomInt(0, 100);
+        if (someInt > 50){
+            sendMessage("Multa finished playing :)");
+            updateBars("hunger", "add", randomInt(5,75));
+            updateBars("happiness", "add", randomInt(1,20));
         }else{
-            sendMessage("Multa is tired and does not have enough stamina to play.");
-        }
-
-
-    };
-
-    ActionListener rest = e -> {
-        sendMessage("Multa started to rest");
-        updateBars("stamina", "add", restRegenRate);
-        sendMessage("Multa's STAMINA recovered " + restRegenRate + " points");
-        sendMessage("Multa finished resting");
-
-    };
-
-    ActionListener meditate = e -> {
-        sendMessage("Multa started to meditate");
-        updateBars("mana", "add", 20);
-        sendMessage("Multa finished to meditate");
-    };
-
-    ActionListener explore = e -> {
-        sendMessage("Multa started to explore");
-        boolean explorationResult = multaExplore();
-        if (explorationResult){
-            TimerEngine someTimer = new TimerEngine(5, CurrentMode.EXPLORE);
-            updateBars("stamina", "subtract", 50);
-            int someXP = randomInt(0, 200);
-            updateBars("xp", "add", someXP);
-            sendMessage("Multa finished exploring and acquired " + someXP + "experience points");
-        }else{
-            Boolean enemyResult = enemyPresent();
-            if (enemyResult){
-                int someDmg = randomInt(0, 100);
-                sendMessage("Multa took " + someDmg + " points of Damage due to an enemy encounter");
-                updateBars("health", "subtract", someDmg);
-                int someXP = randomInt(0, 100);
-                updateBars("xp", "add", someXP);
-            }else{
-
-            }
-        }
-
-    };
-
-    ActionListener forage = e -> {
-        sendMessage("Multa started to explore");
-        updateBars("stamina", "subtract", 25);
-        Boolean success = multaForage();
-        if (success){
-            sendMessage("Multa finished foraging, finding 1 food");
-        }else{
-            sendMessage("Multa finished foraging, no food found");
-        }
-
-    };
-
-    ActionListener adventure = e -> {
-        sendMessage("Multa has started adventure");
-        updateBars("stamina", "subtract", 200);
-        sendMessage("Multa has finished adventuring");
-    };
-
-    ActionListener heal = e -> {
-        int mana = manaBar.getWidth();
-        if (mana >= 400){
-            sendMessage("Multa has started casting healing");
-            updateBars("health", "add", 200);
-            updateBars("mana", "subtract", 400);
-        }else{
-            sendMessage("Multa tried casting but doesn't have the Mana");
+            sendMessage("Multa finished playing but hurt itself, and is now not as happy");
+            updateBars("happiness", "subtract", randomInt(5,75));
+            updateBars("health", "subtract", randomInt(5,75));
+            updateBars("hunger", "add", randomInt(5,75));
         }
 
     };
@@ -523,34 +367,7 @@ public class GameWindow extends JFrame {
             formatedMessage.append(message);
         }
         output.setText(formatedMessage.toString());
-    }
-
-    public Boolean multaForage(){
-        int someChance = randomInt(0, 100);
-        if (someChance < 60){
-            currentFoodPoints ++;
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public Boolean multaExplore(){
-        int someChance = randomInt(0, 100);
-        if (someChance < 50){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public Boolean enemyPresent(){
-        int someChance = randomInt(0, 100);
-        if (someChance < 50){
-            return true;
-        }else{
-            return false;
-        }
+        output.setCaretPosition(output.getText().length());
     }
 
     public static int randomInt(int min, int max) {
@@ -567,15 +384,11 @@ public class GameWindow extends JFrame {
             case "health":
                 targetBar = healthBar;
                 break;
-            case "stamina":
-                targetBar = stamBar;
+            case "hunger":
+                targetBar = hungerBar;
                 break;
-            case "mana":
-                targetBar = manaBar;
-                break;
-            case "xp":
-            case "experience points":  // accept both
-                targetBar = xpBar;
+            case "happiness":
+                targetBar = happyLevel;
                 break;
             default:
                 return; // do nothing
@@ -591,7 +404,7 @@ public class GameWindow extends JFrame {
             return;
         }
 
-        // Clamp between 0 and 600
+        // Clamp between 0 and 500
         newWidth = Math.max(0, Math.min(500, newWidth));
 
         targetBar.setSize(newWidth, 20);

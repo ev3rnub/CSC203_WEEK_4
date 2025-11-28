@@ -13,6 +13,5 @@ Date: Nov 27, 2025
 * 1. Refactored updateBars method, now the bars clamp properly. 
 * 2. Created loadImage method to switch between background images.
 * 3. Implemented basic timerEngine class, not working as intended
-### ToDo
-* 0. Fix timerEngine class.
-* 1. Background Scene Logic, additional timerEngine Logic, RegexEngine
+##11/28/2025
+* 1. Removed some classes and updated comments across the codebase.
